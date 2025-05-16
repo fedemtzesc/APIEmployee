@@ -1,5 +1,6 @@
 package com.invex.APIEmployee.service;
 
+import com.invex.APIEmployee.controller.dto.EmployeePatchDTO;
 import com.invex.APIEmployee.entity.EmployeeEntity;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface EmployeeService {
     public void delete(EmployeeEntity employeeEntity);
     public void deleteById(Long id);
     public List<EmployeeEntity> saveAll(List<EmployeeEntity> employeeEntities);
+    public List<EmployeeEntity>  saveAllFunctional(List<EmployeeEntity> employeeEntities);
+    public EmployeeEntity partialUpdate(Long id, EmployeePatchDTO patchDTO);
 }

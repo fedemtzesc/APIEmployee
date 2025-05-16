@@ -1,74 +1,232 @@
-# APIEmployee
-Prueba Técnica Backend Developer - INVEX
 
-A continuación presentamos la información para desarrollar la prueba, si tienes alguna duda, por favor notifícalo a la brevedad para poder ayudarte.
+# Employee's CRUD Project
 
-
-¡Mucho éxito en la prueba y nos vemos en la presentación!
+REST API to manage a CRUD of company employees
 
 
-Objetivo:
+## API Contract
 
-La prueba consiste en un servicio REST que contenga las siguientes operaciones:
-- API que recupere el listado de todos los empleados registrados.
-- API que borre un empleado, requiere como parámetro el id de registro.
-- API que actualice cualquier dato del empleado.
-- API que inserte uno o varios empleados en una sola petición.
+### 1.0 Retrieves the list of all registered Employees
+###### If no employees are registered into DB, an empty list is returned. Using the GET method
 
+```http
+  GET /api/v1/employee
+```
 
-Modelo de datos “empleado”
-- Primer nombre
-- Segundo nombre
-- Apellido paterno
-- Apellido materno
-- Edad
-- Sexo
-- Fecha de nacimiento (dd-mm-yyyy)
-- Puesto
+No parameter needed, just call end-point using GET Method.
 
+### 2.0 Query an Employee by their ID in the endpoint's path
+###### If employee not found into DB, a message and status will be returned. Using the GET method
 
-Base de datos:
-* Se puede realizar en una base de datos SQL o NoSQL.
+```http
+  GET /api/v1/employee/${id}
+```
 
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `Long` | **Required**. Id of Employee to fetch |
 
-Estructura y tecnologías:
-- Java 8,  11 o 17.
-- Spring Boot (3.x o superior) o Quarkus.
-- Spring JPA.
-- Request y response JSON.
-- Excepciones custom.
-- Documentación de código.
-- Swagger.
--  Pruebas unitarias con Junit (4 o 5) y Mockito.
--  Se permiten librerías externas.
--  Estructura e implementación de propiedades (yaml o properties).
-- Configuración de logs.
-- Nivel de loggeo.
-- Pattern.
+#### getById(@PathVariable Long id)
+    Takes the Id and look for corresponding Employee into DB.
 
-Criterios de Evaluación:
-- POO.
-- Programación funcional.
-- SOLID, arq. Clean o Hexagonal.
-- Nombramiento de API’s.
-- Métodos de petición (Http Method).
-- Manejo de Http status según el comportamiento y manejo de excepciones.
-- Estructura de request y response.
-- Manejo de errores.
-- Validación de datos antes y durante la ejecución del servicio.
-- Manejo de constantes.
-- Manejo de loggeo.
-- Limpieza de código, evitar duplicidad de código.
-- Estructura de código.
-- Nombre de clases y métodos (preferente en inglés).
-- Camel case.
-- Evitar código quemado. (preferente)
-- Implementación de funciones propias de la versión de java a elegir.
-- Programación funcional.
+### 3.0 Create a new Employee
+###### Create a new employee using the POST method
+```http
+  POST /api/v1/employee
+```
 
-Extras:
-- Curl en postman.
-- Documentación de contrato.
-- Mostrar en el log cualquier header recibido en el request.
-- Documentación de README.
-- Bitácora de eventos.
+| Parameter         | Type        | Description                                                                                                                                            |
+|:------------------|:------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `firstName`       | `String`    | **Required**.                                                                                                                                          |
+| `middleName`      | `String`    | **Required**.                                                                                                                                          |
+| `paternalSurname` | `String`    | **Required**.                                                                                                                                          |
+| `maternalSurname` | `String`    | **Required**.                                                                                                                                          |
+| `age`             | `String`    | **Required**.                                                                                                                                          |
+| `sex`             | `Enum`      | **Required**. Posible values:FEMALE\|MALE                                                                                                              |
+| `birthDate`       | `LocalDate` | **Required**. Format: yyyy-MM-dd<br/>example: "1973-07-13"                                                                                             |
+| `jobPosition`     | `Enum`      | **Required**. Posible values:TELLER\|SECRETARY\|SECRETARY\|<br/>EXECUTIVE\|MANAGER\|SUPERVISOR\|<br/>GENERAL_MANAGER\|STAFF\|<br/>DEVELOPPER\|SECURITY |
+
+    Request Example (creating only one new Employee):
+    {
+        "firstName": "Jhony",
+        "middleName": "Taylor",
+        "paternalSurname": "Deep",
+        "maternalSurname": "Juarez",
+        "age": "45",
+        "sex": "MALE",
+        "birthDate": "1970-05-15",
+        "jobPosition": "DEVELOPPER"
+    }
+
+#### createNew(@RequestBody EmployeeEntity newEmployee)
+    Takes the new Employee data, save's into DB, and returns the new Employe with 
+    his asigned Id after has being created.
+
+### 4.0 Update an Employee
+###### Update an employee specifing it's Id, and all the rest of fields. using the PUT method
+```http
+  PUT /api/v1/employee
+```
+
+| Parameter         | Type        | Description                                                                                                                                            |
+|:------------------|:------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Id`              | `Long`      | **Required**.                                                                                                                                          |
+| `firstName`       | `String`    | **Required**.                                                                                                                                          |
+| `middleName`      | `String`    | **Required**.                                                                                                                                          |
+| `paternalSurname` | `String`    | **Required**.                                                                                                                                          |
+| `maternalSurname` | `String`    | **Required**.                                                                                                                                          |
+| `age`             | `String`    | **Required**.                                                                                                                                          |
+| `sex`             | `Enum`      | **Required**. Posible values:FEMALE\|MALE                                                                                                              |
+| `birthDate`       | `LocalDate` | **Required**. Format: yyyy-MM-dd<br/>example: "1973-07-13"                                                                                             |
+| `jobPosition`     | `Enum`      | **Required**. Posible values:TELLER\|SECRETARY\|SECRETARY\|<br/>EXECUTIVE\|MANAGER\|SUPERVISOR\|<br/>GENERAL_MANAGER\|STAFF\|<br/>DEVELOPPER\|SECURITY |
+
+    Request Example (updating an Employee unsing it's Id):
+    {
+        "id":"1",
+        "firstName": "Jhony",
+        "middleName": "Taylor",
+        "paternalSurname": "Deep",
+        "maternalSurname": "Juarez",
+        "age": "45",
+        "sex": "MALE",
+        "birthDate": "1970-05-15",
+        "jobPosition": "DEVELOPPER"
+    }
+
+#### update(@RequestBody EmployeeEntity updEmployee)
+    Takes the new Employee data with it's Id, save's into DB, and returns the updated Employe
+
+### 5.0 Delete an Employee
+###### Delete an employee specifing it's Id in the end-point's path. Using the DELETE method
+
+```http
+  GET /api/v1/employee/${id}
+```
+
+| Parameter | Type     | Description                               |
+| :-------- | :------- |:------------------------------------------|
+| `id`      | `Long` | **Required**. Id of Employee for deletion |
+
+#### delete(@PathVariable Long id)
+    Takes the Id from path and proceeds to delete it's correspondign Employee register into DB
+
+### 6.0 Create one or many Employees
+###### Save one or a Employees list into DB. Using the POST method
+```http
+  POST /api/v1/employee
+```
+
+| Parameter         | Type        | Description                                                                                                                                            |
+|:------------------|:------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `firstName`       | `String`    | **Required**.                                                                                                                                          |
+| `middleName`      | `String`    | **Required**.                                                                                                                                          |
+| `paternalSurname` | `String`    | **Required**.                                                                                                                                          |
+| `maternalSurname` | `String`    | **Required**.                                                                                                                                          |
+| `age`             | `String`    | **Required**.                                                                                                                                          |
+| `sex`             | `Enum`      | **Required**. Posible values:FEMALE\|MALE                                                                                                              |
+| `birthDate`       | `LocalDate` | **Required**. Format: yyyy-MM-dd<br/>example: "1973-07-13"                                                                                             |
+| `jobPosition`     | `Enum`      | **Required**. Posible values:TELLER\|SECRETARY\|SECRETARY\|<br/>EXECUTIVE\|MANAGER\|SUPERVISOR\|<br/>GENERAL_MANAGER\|STAFF\|<br/>DEVELOPPER\|SECURITY |
+
+    Request Example (creating 2 new Employees):
+    [
+        {
+            "firstName": "Jhony",
+            "middleName": "Taylor",
+            "paternalSurname": "Deep",
+            "maternalSurname": "Juarez",
+            "age": "45",
+            "sex": "MALE",
+            "birthDate": "1970-05-15",
+            "jobPosition": "DEVELOPPER"
+        },
+        {
+            "firstName": "Alejandra",
+            "middleName": "",
+            "paternalSurname": "Guzman",
+            "maternalSurname": "Pinal",
+            "age": "60",
+            "sex": "FEMALE",
+            "birthDate": "1964-07-21",
+            "jobPosition": "TELLER"
+        }
+    ]
+
+#### createEmployeeBatch(@RequestBody List<EmployeeEntity> employees)
+    Takes the Employee List data , save them into DB, and returns the created new Employe List.
+
+### 7.0 Create one or many Employees
+###### Save one or a Employees list into DB. Using the POST method
+```http
+  POST /api/v1/employee
+```
+
+| Parameter         | Type        | Description                                                                                                                                            |
+|:------------------|:------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `firstName`       | `String`    | **Required**.                                                                                                                                          |
+| `middleName`      | `String`    | **Required**.                                                                                                                                          |
+| `paternalSurname` | `String`    | **Required**.                                                                                                                                          |
+| `maternalSurname` | `String`    | **Required**.                                                                                                                                          |
+| `age`             | `String`    | **Required**.                                                                                                                                          |
+| `sex`             | `Enum`      | **Required**. Posible values:FEMALE\|MALE                                                                                                              |
+| `birthDate`       | `LocalDate` | **Required**. Format: yyyy-MM-dd<br/>example: "1973-07-13"                                                                                             |
+| `jobPosition`     | `Enum`      | **Required**. Posible values:TELLER\|SECRETARY\|SECRETARY\|<br/>EXECUTIVE\|MANAGER\|SUPERVISOR\|<br/>GENERAL_MANAGER\|STAFF\|<br/>DEVELOPPER\|SECURITY |
+
+    Request Example (creating 2 new Employees):
+    [
+        {
+            "firstName": "Jhony",
+            "middleName": "Taylor",
+            "paternalSurname": "Deep",
+            "maternalSurname": "Juarez",
+            "age": "45",
+            "sex": "MALE",
+            "birthDate": "1970-05-15",
+            "jobPosition": "DEVELOPPER"
+        },
+        {
+            "firstName": "Alejandra",
+            "middleName": "",
+            "paternalSurname": "Guzman",
+            "maternalSurname": "Pinal",
+            "age": "60",
+            "sex": "FEMALE",
+            "birthDate": "1964-07-21",
+            "jobPosition": "TELLER"
+        }
+    ]
+
+#### createEmployeeBatchFunctional(@RequestBody List<EmployeeEntity> employees)
+    Takes the Employee List data , save them into DB, and returns the created new Employe List.
+
+### 8.0 Partial Update an Employee
+###### Update an employee specifing it's Id, and only field that you need to update. using the PATCH method
+```http
+  PATCH /api/v1/employee
+```
+
+| Parameter         | Type        | Description                                                                                                                                            |
+|:------------------|:------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Id`              | `Long`      | **Required**.                                                                                                                                          |
+| `firstName`       | `String`    | **Required**.                                                                                                                                          |
+| `middleName`      | `String`    | **Required**.                                                                                                                                          |
+| `paternalSurname` | `String`    | **Required**.                                                                                                                                          |
+| `maternalSurname` | `String`    | **Required**.                                                                                                                                          |
+| `age`             | `String`    | **Required**.                                                                                                                                          |
+| `sex`             | `Enum`      | **Required**. Posible values:FEMALE\|MALE                                                                                                              |
+| `birthDate`       | `LocalDate` | **Required**. Format: yyyy-MM-dd<br/>example: "1973-07-13"                                                                                             |
+| `jobPosition`     | `Enum`      | **Required**. Posible values:TELLER\|SECRETARY\|SECRETARY\|<br/>EXECUTIVE\|MANAGER\|SUPERVISOR\|<br/>GENERAL_MANAGER\|STAFF\|<br/>DEVELOPPER\|SECURITY |
+
+    Request Example (updating an Employee using it's Id):
+        In this example, we just updating the following 
+        fields excluding the Id field...
+    {
+        "id":"1",
+        "middleName": "",
+        "paternalSurname": "Deep",
+        "maternalSurname": "Juarez",
+        "jobPosition": "EXECUTIVE"
+    }
+
+#### partialUpdateEmployee(@PathVariable Long id,@RequestBody EmployeePatchDTO patchDTO)
+    Takes the new Employee data with it's Id, update's into DB, only requiered fields, and 
+    returns the updated Employee
